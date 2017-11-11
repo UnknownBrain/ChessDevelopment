@@ -8,7 +8,7 @@ import java.awt.event.MouseMotionListener;
 
 /**
  *
- * @author German - pc
+ * @author German - pc, Aaron
  */
 public class FormFrame extends JFrame implements MouseListener{
     // Para el tamaño de la ventana.
@@ -19,6 +19,7 @@ public class FormFrame extends JFrame implements MouseListener{
         m_width  = width;
         m_height = height;
         board = new Board(m_width, m_height);
+        
         // Propiedades de la ventana.
         setSize(m_width, m_height);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
