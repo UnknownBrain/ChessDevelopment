@@ -1,25 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package chess;
 
 import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 /**
  *
  * @author German - pc
  */
-public class FormFrame extends JFrame {
+public class FormFrame extends JFrame implements MouseListener{
     // Para el tamaño de la ventana.
     private final int m_width;
     private final int m_height;
-    
+    private Board board;
     public FormFrame(int width, int height) {
         m_width  = width;
         m_height = height;
-        
+        board = new Board(m_width, m_height);
         // Propiedades de la ventana.
         setSize(m_width, m_height);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -27,6 +26,31 @@ public class FormFrame extends JFrame {
         setResizable(false);
         
         // Se inserta el tablero al frame.
-        add(new Board(m_width, m_height));
+        add(board);
+        
+        addMouseListener(this);     
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        board.getXY(x, y);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }
