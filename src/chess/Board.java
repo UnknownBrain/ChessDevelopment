@@ -16,18 +16,18 @@ import javax.swing.JPanel;
  */
 public class Board extends JPanel{
     private int t = -1;
-    private int x,y;
+    int cx,cy;
     private BufferedImage m_board = null;
     private BufferedImage []black_pieces = new BufferedImage[6];
     private BufferedImage []white_pieces = new BufferedImage[6];
-    private int [][]table = {{6,1,0,0,0,0,11,16},
-                             {5,1,0,0,0,0,11,15},
-                             {4,1,0,0,0,0,11,14},
-                             {3,1,0,0,0,0,11,12},
-                             {2,1,0,0,0,0,11,13},
-                             {4,1,0,0,0,0,11,14},
-                             {5,1,0,0,0,0,11,15},
-                             {6,1,0,0,0,0,11,16}};
+    private int [][]table = {{6,5,4,2,3,4,5,6},
+                             {1,1,1,1,1,1,1,1},
+                             {0,0,0,0,0,0,0,0},
+                             {0,0,0,0,0,0,0,0},
+                             {0,0,0,0,0,0,0,0},
+                             {0,0,0,0,0,0,0,0},
+                             {11,11,11,11,11,11,11,11},
+                             {16,15,14,13,12,14,15,16}};
     private Piece [] piezas = new Piece[32];
         
     private final int m_boardWidth;
@@ -70,14 +70,14 @@ public class Board extends JPanel{
             for(int j = 0 ; j < 8 ;j++){
                 if(table[i][j] > 0 && table[i][j] < 10){
                     piezas[k] = new Piece(black_pieces[table[i][j] - 1],table[i][j],piece_Width,piece_Height,i,j);
-                    piezas[k].setBounds(piece_Width * i, piece_Height * j,piece_Width,piece_Height);
+                    piezas[k].setBounds(piece_Width * j, piece_Height * i,piece_Width,piece_Height);
                     add(piezas[k]);
                     k++;
                 }
                 else{
                     if(table[i][j] > 10){
                         piezas[k] = new Piece(white_pieces[table[i][j] - 11],table[i][j],piece_Width,piece_Height,i,j);
-                        piezas[k].setBounds(piece_Width * i, piece_Height * j,piece_Width,piece_Height);
+                        piezas[k].setBounds(piece_Width * j, piece_Height * i,piece_Width,piece_Height);
                         add(piezas[k]);
                         k++;
                     }
@@ -99,24 +99,24 @@ public class Board extends JPanel{
     } 
     
     public void getXY(int x, int y){
-        this.x = x;
-        this.y = y;
-        x = Math.round((x + 1)/ piece_Width);
-        y = Math.round((y + 30)/ piece_Height);
-        y--;
+        cx = Math.round((y + 30)/ piece_Height);
+        cy = Math.round((x + 1)/ piece_Width);
+        cx--;
         //la operacion de dividir X y Y entre los tamaños de las piezas
         //se realiza para obtener la posicion de la matriz que corresponde
         //a la casilla clickeada
         if(t == -1){
             for(int i = 0 ; i < piezas.length;i++)
-                if(x == piezas[i].getI() && y == piezas[i].getJ()){
+                if(cx == piezas[i].getI() && cy == piezas[i].getJ()){
                     t = i;
                     break;
                 }
         }
         else{
             this.remove(piezas[t]);
-            piezas[t].setBounds(piece_Width * x, piece_Height * y,piece_Width,piece_Height);
+            piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
+            piezas[t].setI(cx);
+            piezas[t].setJ(cy);
             this.add(piezas[t]);
             repaint();
             t =-1;
@@ -125,6 +125,6 @@ public class Board extends JPanel{
         // de la pieza que se haya clickeado y una vez de mueva la pieza se devueve al valor de -1
         // si se clickea un espacio vacion la t se mantiene en su valor de -1.
         //Nota lo ideal seria hacer las consultas a prolog dentro de esta funcion.
-        System.out.println(x+","+y);
+        System.out.println(cx+","+cy);
     }
 }

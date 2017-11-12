@@ -15,7 +15,7 @@ public class Piece extends JPanel{
     private final int nroPieza;
     private final int Width;
     private final int Height;
-    private final int i,j;
+    private int i,j;
     
     public Piece(BufferedImage pieza,int nroPieza,int Width,int Height,int i, int j){
         this.pieza = pieza;
@@ -35,6 +35,12 @@ public class Piece extends JPanel{
     }
     public int getJ(){
         return j;
+    }
+    public void setI(int i){
+        this.i = i;
+    }
+    public void setJ(int j){
+        this.j = j;
     }
     @Override
     protected void paintComponent(Graphics g) {
