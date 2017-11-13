@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
 public class Board extends JPanel{
     private int t = -1;
     int cx,cy;
+    boolean move;
     private BufferedImage m_board = null;
     private BufferedImage []black_pieces = new BufferedImage[6];
     private BufferedImage []white_pieces = new BufferedImage[6];
@@ -98,7 +100,7 @@ public class Board extends JPanel{
         g.drawImage(m_board.getScaledInstance(m_boardWidth, m_boardHeight, Image.SCALE_DEFAULT), 0, 0, m_boardWidth - 7, m_boardHeight - 30, null);
     } 
     
-    public void getXY(int x, int y){
+    public void getXY(int x, int y) {
         cx = Math.round((y + 30)/ piece_Height);
         cy = Math.round((x + 1)/ piece_Width);
         cx--;
@@ -107,12 +109,12 @@ public class Board extends JPanel{
         //a la casilla clickeada
         if(t == -1){
             for(int i = 0 ; i < piezas.length;i++)
-                if(cx == piezas[i].getI() && cy == piezas[i].getJ()){
+                if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
                     t = i;
                     break;
                 }
         }
-        else{
+        else if(MoveOn(piezas[t], cx, cy)){
             this.remove(piezas[t]);
             piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             piezas[t].setI(cx);
@@ -126,5 +128,66 @@ public class Board extends JPanel{
         // si se clickea un espacio vacion la t se mantiene en su valor de -1.
         //Nota lo ideal seria hacer las consultas a prolog dentro de esta funcion.
         System.out.println(cx+","+cy);
+    }
+    
+    public boolean MoveOn(Piece piece, int cx, int cy) {
+        
+        //Movimiento de Peon
+        if(piece.getNroPieza() == 11 /*&& cx < piece.getI() && (cy == piece.getJ() - 1 || cy == piece.getJ() + 1)*/) {
+            return true;
+        }
+        
+        //Movimiento del Rey
+        if(piece.getNroPieza() == 12) {
+            
+            //if(piece.getI() == cx + 1 || piece.getI() == cx - 1) {
+                return true;
+            //}
+            
+            /*if(piece.getJ() == cy + 1 || piece.getJ() == cy - 1) {
+                return true;
+            }*/
+        }
+        
+        //Movimiento de la Reina
+        if(piece.getNroPieza() == 13) {
+            return true;
+        }
+        
+        //Movimiento del Alfil
+        if(piece.getNroPieza() == 14 && (piece.getJ() > cy || piece.getJ() < cy)) {
+            
+            if(piece.getI() > cx || piece.getI() < cx) {
+                return true;
+            }
+        }
+        
+        //Movimiento del Caballo 
+        if(piece.getNroPieza() == 15) {
+            
+            if((piece.getI() == cx + 2 || piece.getI() == cx - 2) && (piece.getJ() == cy + 1 || piece.getJ() == cy - 1)) {
+                return true;
+            }
+            
+            if((piece.getI() == cx + 1 || piece.getI() == cx - 1) && (piece.getJ() == cy + 2 || piece.getJ() == cy - 2)) {
+                return true;
+            }
+        }
+        
+        //Movimiento de la Torre
+        if(piece.getNroPieza() == 16) {
+            
+            if((piece.getI() > cx || piece.getI() < cx) && piece.getJ() == cy) {
+                return true;
+            }
+            
+            if((piece.getJ() > cy || piece.getJ() < cy) && piece.getI() == cx) {
+                return true;
+            }
+        }
+        
+        JOptionPane.showMessageDialog(null, "Movimiento no valido");
+        
+        return false;
     }
 }
