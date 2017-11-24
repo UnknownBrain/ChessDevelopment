@@ -15,8 +15,12 @@ public class Chess {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        (new FormFrame(500, 500)).setVisible(true);
+        try {
+            (new FormFrame(500, 500)).setVisible(true);
+        }
+        catch(final Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }
