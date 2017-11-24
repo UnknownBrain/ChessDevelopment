@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
+import org.jpl7.Query;
 
 /**
  *
@@ -132,61 +133,101 @@ public class Board extends JPanel{
     
     public boolean MoveOn(Piece piece, int cx, int cy) {
         
-        //Movimiento de Peon
-        if(piece.getNroPieza() == 11 /*&& cx < piece.getI() && (cy == piece.getJ() - 1 || cy == piece.getJ() + 1)*/) {
-            return true;
-        }
+        String conection = "consult('white_move.pl')";
+        String comprobar;
+        boolean mover = false;
+        Query query, move;
         
-        //Movimiento del Rey
-        if(piece.getNroPieza() == 12) {
-            
-            //if(piece.getI() == cx + 1 || piece.getI() == cx - 1) {
-                return true;
-            //}
-            
-            /*if(piece.getJ() == cy + 1 || piece.getJ() == cy - 1) {
-                return true;
-            }*/
-        }
+        try {
+                //Movimiento de Peon
+                if(piece.getNroPieza() == 11) {
+                    
+                    query = new Query(conection);
+                    query.hasSolution();
+                    comprobar = "peon(" + piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").";
+                    move = new Query(comprobar);
+                    
+                    mover = move.hasSolution();
+                    
+                    if(mover) {
+                        return true;
+                    }
+                    
+                    if(!mover){
+                        JOptionPane.showMessageDialog(null, "Movimiento no valido");
+                    }
+                }
         
-        //Movimiento de la Reina
-        if(piece.getNroPieza() == 13) {
-            return true;
-        }
+                //Movimiento del Rey
+                if(piece.getNroPieza() == 12) {
+            
+                    query = new Query(conection);
+                    query.hasSolution();
+                    comprobar = "rey(" + piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").";
+                    move = new Query(comprobar);
+                    
+                    mover = move.hasSolution();
+                    
+                    if(mover) {
+                        return true;
+                    }
+                    
+                    if(!mover){
+                        JOptionPane.showMessageDialog(null, "Movimiento no valido");
+                    }
+                }
         
-        //Movimiento del Alfil
-        if(piece.getNroPieza() == 14 && (piece.getJ() > cy || piece.getJ() < cy)) {
-            
-            if(piece.getI() > cx || piece.getI() < cx) {
-                return true;
-            }
-        }
+                //Movimiento de la Reina
+                if(piece.getNroPieza() == 13) {
+                    return true;
+                }
         
-        //Movimiento del Caballo 
-        if(piece.getNroPieza() == 15) {
+                //Movimiento del Alfil
+                if(piece.getNroPieza() == 14) {
             
-            if((piece.getI() == cx + 2 || piece.getI() == cx - 2) && (piece.getJ() == cy + 1 || piece.getJ() == cy - 1)) {
-                return true;
-            }
-            
-            if((piece.getI() == cx + 1 || piece.getI() == cx - 1) && (piece.getJ() == cy + 2 || piece.getJ() == cy - 2)) {
-                return true;
-            }
-        }
+                    return true;
+                }
         
-        //Movimiento de la Torre
-        if(piece.getNroPieza() == 16) {
+                //Movimiento del Caballo 
+                if(piece.getNroPieza() == 15) {
             
-            if((piece.getI() > cx || piece.getI() < cx) && piece.getJ() == cy) {
-                return true;
-            }
-            
-            if((piece.getJ() > cy || piece.getJ() < cy) && piece.getI() == cx) {
-                return true;
-            }
-        }
+                    query = new Query(conection);
+                    query.hasSolution();
+                    comprobar = "caballo(" + piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").";
+                    move = new Query(comprobar);
+                    
+                    mover = move.hasSolution();
+                    
+                    if(mover) {
+                        return true;
+                    }
+                    
+                    if(!mover){
+                        JOptionPane.showMessageDialog(null, "Movimiento no valido");
+                    }
+                }
         
-        JOptionPane.showMessageDialog(null, "Movimiento no valido");
+                //Movimiento de la Torre
+                if(piece.getNroPieza() == 16) {
+            
+                    query = new Query(conection);
+                    query.hasSolution();
+                    comprobar = "torre(" + piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").";
+                    move = new Query(comprobar);
+                    
+                    mover = move.hasSolution();
+                    
+                    if(mover) {
+                        return true;
+                    }
+                    
+                    if(!mover){
+                        JOptionPane.showMessageDialog(null, "Movimiento no valido");
+                    }
+                }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
         
         return false;
     }
