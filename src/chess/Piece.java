@@ -15,9 +15,9 @@ public class Piece extends JPanel{
     private final int nroPieza;
     private final int Width;
     private final int Height;
-    private int i,j;
+    private int i, j;
     
-    public Piece(BufferedImage pieza,int nroPieza,int Width,int Height,int i, int j){
+    public Piece(BufferedImage pieza, int nroPieza, int Width, int Height, int i, int j){
         this.pieza = pieza;
         this.nroPieza = nroPieza;
         this.Width = Width;

@@ -17,12 +17,24 @@ import org.jpl7.Query;
  * @author German - pc, Aaron
  */
 public class Board extends JPanel{
+    
+    //Cantidad máxima de piezas en el tablero.
+    private final static byte MAX_PIECES = 32;
+    
+    //Cantidad de tipos de piezas (Peón, Alfil, Caballo, Rey, Reina, Torre).
+    private final static byte TYPE_PIECES = 6;
+    
     private int t = -1;
-    int cx,cy;
-    boolean move;
+    private int cx, cy;
+    private boolean move;
     private BufferedImage m_board = null;
-    private BufferedImage []black_pieces = new BufferedImage[6];
-    private BufferedImage []white_pieces = new BufferedImage[6];
+    private BufferedImage []black_pieces = new BufferedImage[TYPE_PIECES];
+    private BufferedImage []white_pieces = new BufferedImage[TYPE_PIECES];
+    
+    //(Negra - Blanca)
+    //(1 - 11) - Peón       (2 - 12) - Rey
+    //(3 - 13) - Reina      (4 - 14) - Alfil
+    //(5 - 15) - Caballo    (6 - 16) - Torre
     private int [][]table = {{6,5,4,2,3,4,5,6},
                              {1,1,1,1,1,1,1,1},
                              {0,0,0,0,0,0,0,0},
@@ -31,7 +43,7 @@ public class Board extends JPanel{
                              {0,0,0,0,0,0,0,0},
                              {11,11,11,11,11,11,11,11},
                              {16,15,14,13,12,14,15,16}};
-    private Piece [] piezas = new Piece[32];
+    private Piece [] piezas = new Piece[MAX_PIECES];
         
     private final int m_boardWidth;
     private final int m_boardHeight;
@@ -60,27 +72,27 @@ public class Board extends JPanel{
             // Para las piezas el parámetro será tipeado dinámicamente por el desarrollador
             // para que seleccione la pieza con que le haya tocado trabajar.
             m_board = ImageIO.read(new File("images/board/board.jpg"));
-            for(int i = 0;i < 6;i++){
+            for(byte i = 0; i < TYPE_PIECES; i++){
                 black_pieces[i] = ImageIO.read(new File("images/enum pieces/"+(i+1)+".png"));
                 white_pieces[i] = ImageIO.read(new File("images/enum pieces/"+(i+11)+".png"));
             }
             
         } catch (IOException ex1) {
-            System.out.println(ex1.toString());
+            ex1.printStackTrace();
         } 
         int k = 0;
-        for(int i = 0 ; i < 8 ; i++){
-            for(int j = 0 ; j < 8 ;j++){
-                if(table[i][j] > 0 && table[i][j] < 10){
-                    piezas[k] = new Piece(black_pieces[table[i][j] - 1],table[i][j],piece_Width,piece_Height,i,j);
-                    piezas[k].setBounds(piece_Width * j, piece_Height * i,piece_Width,piece_Height);
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                if(table[i][j] > 0 && table[i][j] < 10) {
+                    piezas[k] = new Piece(black_pieces[table[i][j] - 1], table[i][j], piece_Width, piece_Height, i, j);
+                    piezas[k].setBounds(piece_Width * j, piece_Height * i, piece_Width, piece_Height);
                     add(piezas[k]);
                     k++;
                 }
                 else{
                     if(table[i][j] > 10){
-                        piezas[k] = new Piece(white_pieces[table[i][j] - 11],table[i][j],piece_Width,piece_Height,i,j);
-                        piezas[k].setBounds(piece_Width * j, piece_Height * i,piece_Width,piece_Height);
+                        piezas[k] = new Piece(white_pieces[table[i][j] - 11], table[i][j], piece_Width, piece_Height,i,j);
+                        piezas[k].setBounds(piece_Width * j, piece_Height * i, piece_Width, piece_Height);
                         add(piezas[k]);
                         k++;
                     }
@@ -102,8 +114,8 @@ public class Board extends JPanel{
     } 
     
     public void getXY(int x, int y) {
-        cx = Math.round((y + 30)/ piece_Height);
-        cy = Math.round((x + 1)/ piece_Width);
+        cx = Math.round((y + 30) / piece_Height);
+        cy = Math.round((x + 1) / piece_Width);
         cx--;
         //la operacion de dividir X y Y entre los tamaños de las piezas
         //se realiza para obtener la posicion de la matriz que corresponde
