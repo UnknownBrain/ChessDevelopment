@@ -36,7 +36,12 @@ public class FormFrame extends JFrame implements MouseListener{
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
+        try{
         board.getXY(x, y);
+        }
+        catch(InterruptedException ie){
+            ie.printStackTrace();
+        }
     }
 
     @Override

@@ -102,6 +102,19 @@ public class Board extends JPanel{
             }
         }
         
+        //Enviar tablero a tablero.pl
+        Query q = new Query("consult('tablero.pl')");
+        q.hasSolution();
+        for(byte i = 0; i < MAX_PIECES; ++i) {
+            //assertz(aliado(COLOR, X, Y)) //0 Negro //1 Blanco
+            Piece p = piezas[i];
+            String assertz = "assertz(pieza(";
+            assertz = (p.getNroPieza() > 10) ? assertz.concat("1, ") : assertz.concat("0, ");
+            assertz = assertz.concat(p.getI() + "," + p.getJ() + "))");
+            Query aux = new Query(assertz);
+            q.hasSolution();
+        }
+        
     }
     
     @Override
@@ -124,13 +137,14 @@ public class Board extends JPanel{
         //a la casilla clickeada
         if(t == -1) {
             for(int i = 0 ; i < piezas.length;i++)
-                if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
-                    piezas[i].setOpaque(true);
-                    piezas[i].setBackground(Color.green);
-                    repaint();
-                    t = i;
-                    break;
-                }
+                if (piezas[i] != null)
+                    if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
+                        piezas[i].setOpaque(true);
+                        piezas[i].setBackground(Color.green);
+                        repaint();
+                        t = i;
+                        break;
+                    }
         }
         else
             if (piezas[t].getI() != cx || piezas[t].getJ() != cy){
@@ -139,6 +153,38 @@ public class Board extends JPanel{
                     piezas[t].setBounds(piece_Width * cy - 3, piece_Height * cx,piece_Width,piece_Height);
                     table[piezas[t].getI()][piezas[t].getJ()] = 0;
                     table[cx][cy] = piezas[t].getNroPieza();
+                    int u = -1;
+                    
+                    for(int i = 0 ; i < piezas.length;i++)
+                        if(piezas[i] != null)
+                            if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 1 && piezas[i].getNroPieza() <= 6)){
+                                u = i;
+                                break;
+                            }
+                    
+                    //Consultar tablero.pl
+                    Query q = new Query("consult('tablero.pl')");
+                    q.hasSolution();
+
+                    int c = (piezas[t].getNroPieza()>10) ? 1 : 0;
+                    
+                    
+                    //Comer pieza.
+                    if(u != -1) {
+                        table[piezas[u].getI()][piezas[u].getJ()] = piezas[t].getNroPieza();
+                        Query eliminar = new Query("retract(pieza(" + c + "," + piezas[u].getI() + "," + piezas[u].getJ() + "))");
+                        eliminar.hasSolution();
+                        this.remove(piezas[u]);
+                        repaint();
+                        piezas[u] = null;
+                    }
+
+                    //Mover pieza.
+                    Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
+                    eliminar.hasSolution();
+                    Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
+                    insertar.hasSolution();
+                    
                     piezas[t].setI(cx);
                     piezas[t].setJ(cy);
                     piezas[t].setFirstMovement(false);
@@ -178,6 +224,40 @@ public class Board extends JPanel{
             piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             table[piezas[t].getI()][piezas[t].getJ()] = 0;
             table[cx][cy] = piezas[t].getNroPieza();
+        
+            int u = -1;
+            this.remove(piezas[t]);
+            piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
+            
+            for(int i = 0 ; i < piezas.length;i++)
+                if(piezas[i] != null)
+                    if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
+                        u = i;
+                        break;
+                    }
+            
+            //Consultar tablero.pl
+            Query q = new Query("consult('tablero.pl')");
+            q.hasSolution();
+            
+            int c = (piezas[t].getNroPieza() > 10) ? 1 : 0;
+            
+            //Comer pieza.
+            if(u != -1) {
+                table[piezas[u].getI()][piezas[u].getJ()] = piezas[t].getNroPieza();
+                Query eliminar = new Query("retract(pieza(" + c + "," + piezas[u].getI() + "," + piezas[u].getJ() + "))");
+                eliminar.hasSolution();
+                this.remove(piezas[u]);
+                repaint();
+                piezas[u] = null;
+            }
+            
+            //Mover pieza.
+            Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
+            eliminar.hasSolution();
+            Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
+            insertar.hasSolution();
+                
             piezas[t].setI(cx);
             piezas[t].setJ(cy);
             this.add(piezas[t]);
@@ -194,19 +274,6 @@ public class Board extends JPanel{
         //Consulta a white_move.pl
         query = new Query(conection);
         query.hasSolution();
-        
-        //Enviar tablero
-        for(byte i = 0; i < MAX_PIECES; ++i) {
-            //assertz(aliado(X, Y))
-            String assertz = "assertz(pieza(";
-            Piece p = piezas[i];
-            if (p == null)
-                continue;
-            assertz = (p.getNroPieza() > 10) ? assertz.concat("1, ") : assertz.concat("0, ");
-            assertz = assertz.concat(p.getI() + "," + p.getJ() + "))");
-            Query q = new Query(assertz);
-            q.hasSolution();
-        }
 
         //Movimiento de...
         switch(piece.getNroPieza()) {
