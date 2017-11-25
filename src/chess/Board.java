@@ -135,7 +135,7 @@ public class Board extends JPanel{
             piezas[t].setJ(cy);
             this.add(piezas[t]);
             repaint();
-            t =-1;
+            t = -1;
         }
         //la variable t es una especie de bandera, su funcion es guardar el indice del arreglo
         // de la pieza que se haya clickeado y una vez de mueva la pieza se devueve al valor de -1
@@ -153,6 +153,17 @@ public class Board extends JPanel{
         //Consulta a white_move.pl
         query = new Query(conection);
         query.hasSolution();
+        
+        //Enviar tablero
+        for(byte i = 0; i < MAX_PIECES; ++i) {
+            //assertz(aliado(X, Y))
+            String assertz = "assertz(pieza(";
+            Piece p = piezas[i];
+            assertz = (p.getNroPieza() > 10) ? assertz.concat("1, ") : assertz.concat("0, ");
+            assertz = assertz.concat(p.getI() + "," + p.getJ() + "))");
+            Query q = new Query(assertz);
+            q.hasSolution();
+        }
 
         //Movimiento de...
         switch(piece.getNroPieza()) {
