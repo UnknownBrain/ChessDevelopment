@@ -31,4 +31,4 @@ rey(X1, X2, Y1, Y2):-
 	correcto(Y1, Y2),
 	libre(X2, Y2).
 
-peon(A, B, C, D):- B < A, masmenos1(D,C).
+peon(FM, A, B, _, _):- B < A, C is A - B, C =< FM.

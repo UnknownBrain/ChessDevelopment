@@ -133,6 +133,7 @@ public class Board extends JPanel{
             piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             piezas[t].setI(cx);
             piezas[t].setJ(cy);
+            piezas[t].setFirstMovement(1);
             this.add(piezas[t]);
             repaint();
             t = -1;
@@ -169,7 +170,7 @@ public class Board extends JPanel{
         switch(piece.getNroPieza()) {
             case 11:
                 //Peón
-                comprobar += comprobar.concat("peon(");
+                comprobar += comprobar.concat("peon(" + piece.getFirstMovement() + ", ");
                 break;
             case 12:
                 //Rey
