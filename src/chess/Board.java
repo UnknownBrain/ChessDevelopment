@@ -18,7 +18,7 @@ import org.jpl7.Query;
  *
  * @author German - pc, Aaron
  */
-public class Board extends JPanel{
+public class Board extends JPanel {
     
     //Cantidad máxima de piezas en el tablero.
     private final static byte MAX_PIECES = 32;
@@ -77,14 +77,14 @@ public class Board extends JPanel{
             // Para las piezas el parámetro será tipeado dinámicamente por el desarrollador
             // para que seleccione la pieza con que le haya tocado trabajar.
             m_board = ImageIO.read(new File("images/board/board.jpg"));
-            for(byte i = 0; i < TYPE_PIECES; i++){
+            for(byte i = 0; i < TYPE_PIECES; i++) {
                 black_pieces[i] = ImageIO.read(new File("images/enum pieces/"+(i+1)+".png"));
                 white_pieces[i] = ImageIO.read(new File("images/enum pieces/"+(i+11)+".png"));
             }
             
         } catch (IOException ex1) {
             ex1.printStackTrace();
-        } 
+        }
         
         //Agregar piezas
         for(byte i = 0, k = 0; i < TABLE_SIZE; i++) {
@@ -126,7 +126,7 @@ public class Board extends JPanel{
         // Ya que esos parámetros representan la esquina inferior derecha de la imagen.
         // Y al intentarla despleglar del mismo tamaño de la ventana, sobresale un poco.
         g.drawImage(m_board.getScaledInstance(m_boardWidth, m_boardHeight, Image.SCALE_DEFAULT), 0, 0, m_boardWidth - 7, m_boardHeight - 30, null);
-    } 
+    }
     
     public void getXY(int x, int y)  throws InterruptedException {
         cx = Math.round((y + 30) / piece_Height);
@@ -136,8 +136,8 @@ public class Board extends JPanel{
         //se realiza para obtener la posicion de la matriz que corresponde
         //a la casilla clickeada
         if(t == -1) {
-            for(int i = 0 ; i < piezas.length;i++)
-                if (piezas[i] != null)
+            for(int i = 0 ; i < piezas.length;i++) {
+                if (piezas[i] != null) {
                     if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
                         piezas[i].setOpaque(true);
                         piezas[i].setBackground(Color.green);
@@ -145,23 +145,26 @@ public class Board extends JPanel{
                         t = i;
                         break;
                     }
+                }
+            }
         }
         else
-            if (piezas[t].getI() != cx || piezas[t].getJ() != cy){
-                if(true/*MoveOn(piezas[t], cx, cy)*/){
+            if (piezas[t].getI() != cx || piezas[t].getJ() != cy) {
+                if(true/*MoveOn(piezas[t], cx, cy)*/) {
                     this.remove(piezas[t]);
                     piezas[t].setBounds(piece_Width * cy - 3, piece_Height * cx,piece_Width,piece_Height);
                     table[piezas[t].getI()][piezas[t].getJ()] = 0;
                     table[cx][cy] = piezas[t].getNroPieza();
                     int u = -1;
                     
-                    for(int i = 0 ; i < piezas.length;i++)
-                        if(piezas[i] != null)
-                            if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 1 && piezas[i].getNroPieza() <= 6)){
+                    for(int i = 0 ; i < piezas.length;i++) {
+                        if(piezas[i] != null) {
+                            if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 1 && piezas[i].getNroPieza() <= 6)) {
                                 u = i;
                                 break;
                             }
-                    
+                        }
+                    }
                     //Consultar tablero.pl
                     Query q = new Query("consult('tablero.pl')");
                     q.hasSolution();
@@ -207,19 +210,21 @@ public class Board extends JPanel{
         System.out.println(cx+","+cy);
     }
     
-    public void PCmove() throws InterruptedException{
+    public void PCmove() throws InterruptedException {
         Random R = new Random();
         int t;
-        do{
+        do {
             t = R.nextInt(16);
             if(piezas[t] != null)
-                if (piezas[t].getNroPieza() > 0 && piezas[t].getNroPieza() <= 6)
+                if (piezas[t].getNroPieza() > 0 && piezas[t].getNroPieza() <= 6) {
                     break;
+                }
+            }
         }while(true);
         int cx = R.nextInt(8);
         int cy = R.nextInt(8);
         
-        if(/*MoveOn(piezas[t], cx, cy)*/true){
+        if(/*MoveOn(piezas[t], cx, cy)*/true) {
             this.remove(piezas[t]);
             piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             table[piezas[t].getI()][piezas[t].getJ()] = 0;
@@ -229,12 +234,14 @@ public class Board extends JPanel{
             this.remove(piezas[t]);
             piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             
-            for(int i = 0 ; i < piezas.length;i++)
-                if(piezas[i] != null)
+            for(int i = 0 ; i < piezas.length;i++) {
+                if(piezas[i] != null) {
                     if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
                         u = i;
                         break;
                     }
+                }
+            }
             
             //Consultar tablero.pl
             Query q = new Query("consult('tablero.pl')");
@@ -323,9 +330,10 @@ public class Board extends JPanel{
         //Enviar consulta
         move = new Query(comprobar);
 
-        if (true/*move.hasSolution()*/)
+        if (true/*move.hasSolution()*/) {
             return true;
-        else{
+        }
+        else {
             piezas[t].setOpaque(false);
             t = -1;
             JOptionPane.showMessageDialog(null, "Movimiento inválido");

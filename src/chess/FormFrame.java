@@ -10,7 +10,7 @@ import java.awt.event.MouseMotionListener;
  *
  * @author German - pc, Aaron
  */
-public class FormFrame extends JFrame implements MouseListener{
+public class FormFrame extends JFrame implements MouseListener {
     // Para el tamaño de la ventana.
     private final int m_width;
     private final int m_height;
@@ -36,8 +36,8 @@ public class FormFrame extends JFrame implements MouseListener{
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        try{
-        board.getXY(x, y);
+        try {
+            board.getXY(x, y);
         }
         catch(InterruptedException ie){
             ie.printStackTrace();
@@ -45,18 +45,14 @@ public class FormFrame extends JFrame implements MouseListener{
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-    }
+    public void mousePressed(MouseEvent e) {}
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-    }
+    public void mouseReleased(MouseEvent e) {}
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 }
