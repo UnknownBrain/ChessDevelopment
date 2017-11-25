@@ -202,9 +202,8 @@ public class Board extends JPanel{
               }
             
         //la variable t es una especie de bandera, su funcion es guardar el indice del arreglo
-        // de la pieza que se haya clickeado y una vez de mueva la pieza se devueve al valor de -1
-        // si se clickea un espacio vacion la t se mantiene en su valor de -1.
-        //Nota lo ideal seria hacer las consultas a prolog dentro de esta funcion.
+        // de la pieza que se haya clickeado y una vez se mueva la pieza se devueve al valor de -1
+        // si se clickea un espacio vacio la t se mantiene en su valor de -1.
         System.out.println(cx+","+cy);
     }
     
