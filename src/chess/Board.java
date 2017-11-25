@@ -185,10 +185,7 @@ public class Board extends JPanel{
                 //Alfil
                 comprobar += comprobar.concat("alfil(");
                 
-                // Se le envía en qué cuadrante se moverá el alfil.
-                if(cx == piece.getI() && cy == piece.getJ()) 
-                    return false;
-                
+                // Se le envía en qué cuadrante se moverá el alfil.                
                 if(cx < piece.getI() && cy < piece.getJ()) 
                     comprobar += "1, ";
                 else if(cx > piece.getI() && cy > piece.getJ())
@@ -197,6 +194,9 @@ public class Board extends JPanel{
                     comprobar += "3, ";
                 else if(cx > piece.getI() && cy < piece.getJ())
                     comprobar += "4, ";
+                else 
+                    comprobar += "0, ";
+                
                 break;
             case 15:
                 //Caballo
