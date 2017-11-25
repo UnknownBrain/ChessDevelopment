@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
@@ -96,7 +97,7 @@ public class Board extends JPanel{
             for(byte j = 0; j < TABLE_SIZE; j++, k++) {
                 BufferedImage bi = (table[i][j] > 10) ? white_pieces[table[i][j] - 11]: black_pieces[table[i][j] - 1];
                 piezas[k] = new Piece(bi, table[i][j], piece_Width, piece_Height, i, j);
-                piezas[k].setBounds(piece_Width * j, piece_Height * i, piece_Width, piece_Height);
+                piezas[k].setBounds(piece_Width * j - 3, piece_Height * i, piece_Width, piece_Height);
                 add(piezas[k]);
             }
         }
@@ -114,7 +115,7 @@ public class Board extends JPanel{
         g.drawImage(m_board.getScaledInstance(m_boardWidth, m_boardHeight, Image.SCALE_DEFAULT), 0, 0, m_boardWidth - 7, m_boardHeight - 30, null);
     } 
     
-    public void getXY(int x, int y) {
+    public void getXY(int x, int y)  throws InterruptedException {
         cx = Math.round((y + 30) / piece_Height);
         cy = Math.round((x + 1) / piece_Width);
         cx--;
@@ -124,26 +125,64 @@ public class Board extends JPanel{
         if(t == -1) {
             for(int i = 0 ; i < piezas.length;i++)
                 if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
+                    piezas[i].setOpaque(true);
+                    piezas[i].setBackground(Color.green);
+                    repaint();
                     t = i;
                     break;
                 }
         }
-        else if(MoveOn(piezas[t], cx, cy)){
-            this.remove(piezas[t]);
-            piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
-            piezas[t].setI(cx);
-            piezas[t].setJ(cy);
-            piezas[t].setFirstMovement(1);
-            table[cx][cy] = piezas[t].getNroPieza();
-            this.add(piezas[t]);
-            repaint();
-            t = -1;
-        }
+        else
+            if (piezas[t].getI() != cx || piezas[t].getJ() != cy){
+                if(true/*MoveOn(piezas[t], cx, cy)*/){
+                    this.remove(piezas[t]);
+                    piezas[t].setBounds(piece_Width * cy - 3, piece_Height * cx,piece_Width,piece_Height);
+                    table[piezas[t].getI()][piezas[t].getJ()] = 0;
+                    table[cx][cy] = piezas[t].getNroPieza();
+                    piezas[t].setI(cx);
+                    piezas[t].setJ(cy);
+                    piezas[t].setFirstMovement(false);
+                    this.add(piezas[t]);
+                    piezas[t].setOpaque(false);
+                    repaint();
+                    t = -1;
+                    PCmove();
+                    
+                }
+            } else {
+                piezas[t].setOpaque(false);
+                repaint();
+                t = -1;
+              }
+            
         //la variable t es una especie de bandera, su funcion es guardar el indice del arreglo
         // de la pieza que se haya clickeado y una vez de mueva la pieza se devueve al valor de -1
         // si se clickea un espacio vacion la t se mantiene en su valor de -1.
         //Nota lo ideal seria hacer las consultas a prolog dentro de esta funcion.
         System.out.println(cx+","+cy);
+    }
+    
+    public void PCmove() throws InterruptedException{
+        Random R = new Random();
+        int t;
+        do{
+            t = R.nextInt(16);
+            if (piezas[t].getNroPieza() > 0 && piezas[t].getNroPieza() <= 6)
+                break;
+        }while(true);
+        int cx = R.nextInt(8);
+        int cy = R.nextInt(8);
+        
+        if(/*MoveOn(piezas[t], cx, cy)*/true){
+            this.remove(piezas[t]);
+            piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
+            table[piezas[t].getI()][piezas[t].getJ()] = 0;
+            table[cx][cy] = piezas[t].getNroPieza();
+            piezas[t].setI(cx);
+            piezas[t].setJ(cy);
+            this.add(piezas[t]);
+            repaint();    
+        }
     }
     
     public boolean MoveOn(Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
@@ -161,6 +200,8 @@ public class Board extends JPanel{
             //assertz(aliado(X, Y))
             String assertz = "assertz(pieza(";
             Piece p = piezas[i];
+            if (p == null)
+                continue;
             assertz = (p.getNroPieza() > 10) ? assertz.concat("1, ") : assertz.concat("0, ");
             assertz = assertz.concat(p.getI() + "," + p.getJ() + "))");
             Query q = new Query(assertz);
@@ -171,7 +212,7 @@ public class Board extends JPanel{
         switch(piece.getNroPieza()) {
             case 11:
                 //Peón
-                comprobar += comprobar.concat("peon(" + piece.getFirstMovement() + ", ");
+                comprobar += comprobar.concat("peon(");
                 break;
             case 12:
                 //Rey
@@ -215,14 +256,13 @@ public class Board extends JPanel{
         //Enviar consulta
         move = new Query(comprobar);
 
-        if (move.hasSolution()) {
+        if (true/*move.hasSolution()*/)
             return true;
-        }
-        else {
+        else{
+            piezas[t].setOpaque(false);
             t = -1;
             JOptionPane.showMessageDialog(null, "Movimiento inválido");
         }
-        
         return false;
     }
 }
