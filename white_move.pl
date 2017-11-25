@@ -32,3 +32,5 @@ rey(X1, X2, Y1, Y2):-
 	libre(X2, Y2).
 
 peon(FM, A, B, _, _):- B < A, C is A - B, C =< FM.
+
+dentroTablero(I, J) :- I >= 0, I =< 7, J >= 0, J =< 7.
