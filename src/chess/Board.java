@@ -215,7 +215,7 @@ public class Board extends JPanel {
         int t;
         do {
             t = R.nextInt(16);
-            if(piezas[t] != null)
+            if(piezas[t] != null) {
                 if (piezas[t].getNroPieza() > 0 && piezas[t].getNroPieza() <= 6) {
                     break;
                 }
