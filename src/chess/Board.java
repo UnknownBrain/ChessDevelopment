@@ -201,10 +201,13 @@ public class Board extends JPanel{
         //Enviar consulta
         move = new Query(comprobar);
 
-        if (move.hasSolution())
+        if (move.hasSolution()) {
             return true;
-        else
+        }
+        else {
+            t = -1;
             JOptionPane.showMessageDialog(null, "Movimiento inválido");
+        }
         
         return false;
     }
