@@ -134,6 +134,7 @@ public class Board extends JPanel{
             piezas[t].setI(cx);
             piezas[t].setJ(cy);
             piezas[t].setFirstMovement(1);
+            table[cx][cy] = piezas[t].getNroPieza();
             this.add(piezas[t]);
             repaint();
             t = -1;
