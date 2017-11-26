@@ -20,6 +20,9 @@ import org.jpl7.Query;
  */
 public class Board extends JPanel {
     
+    //Nombre de carpeta con archivos .pl
+    private final static String PROLOG_FOLDER = "prolog files";
+    
     //Cantidad máxima de piezas en el tablero.
     private final static byte MAX_PIECES = 32;
     
@@ -124,6 +127,11 @@ public class Board extends JPanel {
     
     //Enviar tablero a tablero.pl
     private void enviarTableroProlog() {
+        //Cambiar directorio raíz por carpeta con archivos Prolog.
+        Query find = new Query("working_directory(_, '" + PROLOG_FOLDER + "')");
+        find.hasSolution();
+        
+        //Consultar tablero.pl
         Query q = new Query("consult('tablero.pl')");
         q.hasSolution();
         for (Piece p : piezas) {
