@@ -241,7 +241,7 @@ public class Board extends JPanel {
                 if(true/*MoveOn(piezas[t], cx, cy)*/) {
                     moverPieza((byte)3, t, cx, cy, (byte)0);
                     piezas[t].setOpaque(false);
-                    piezas[t].setFirstMovement(false);
+                    piezas[t].setFirstMovement(1);
                     repaint();
                     t = -1;
                     PCmove();

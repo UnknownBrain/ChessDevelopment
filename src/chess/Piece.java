@@ -18,7 +18,8 @@ public class Piece extends JPanel {
     private int i, j;
     
     // Variable para controlar el primer movimiento del peón y poder mover dos o una posición.
-    private boolean m_firstMovement;
+    // Tiene que ser entero porque en la consulta con prolog lo uso con una diferencia.
+    private int m_firstMovement;
     
     public Piece(BufferedImage pieza, int nroPieza, int Width, int Height, int i, int j) {
         this.pieza = pieza;
@@ -27,7 +28,7 @@ public class Piece extends JPanel {
         this.Height = Height;
         this.i = i;
         this.j = j;
-        this.m_firstMovement = true;
+        this.m_firstMovement = 2;
         this.setOpaque(false);
         this.setPreferredSize(new Dimension(Width,Height));
     }
@@ -37,8 +38,8 @@ public class Piece extends JPanel {
     public void setI(int i) { this.i = i; }
     public void setJ(int j) { this.j = j; }
     
-    public void setFirstMovement(boolean f) { this.m_firstMovement = f; }
-    public boolean getFirstMovement() { return this.m_firstMovement; }
+    public void setFirstMovement(int f) { this.m_firstMovement = f; }
+    public int getFirstMovement() { return this.m_firstMovement; }
     
     @Override
     protected void paintComponent(Graphics g) {
