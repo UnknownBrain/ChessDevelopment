@@ -306,6 +306,7 @@ public class Board extends JPanel {
             case 13:
                 //Reina
                 //TODO: REINA
+                comprobar += comprobar.concat("reina(");
                 break;
             case 14:
                 //Alfil
@@ -336,8 +337,6 @@ public class Board extends JPanel {
                 throw new IllegalArgumentException("Pieza inválida");
         }
 
-        //Concatenar todo.
-        comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
         //Enviar consulta
         move = new Query(comprobar);
 
