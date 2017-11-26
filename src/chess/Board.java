@@ -238,10 +238,10 @@ public class Board extends JPanel {
         }
         else
             if (piezas[t].getI() != cx || piezas[t].getJ() != cy) {
-                if(true/*MoveOn(piezas[t], cx, cy)*/) {
+                if(MoveOn(piezas[t], cx, cy)) {
                     moverPieza((byte)3, t, cx, cy, (byte)0);
                     piezas[t].setOpaque(false);
-                    piezas[t].setFirstMovement(1);
+                    piezas[t].setFirstMovement(false);
                     repaint();
                     t = -1;
                     PCmove();
@@ -275,7 +275,7 @@ public class Board extends JPanel {
             int cx = R.nextInt(8);
             int cy = R.nextInt(8);
 
-            if(/*MoveOn(piezas[t], cx, cy)*/true && buscarPieza(cx,cy,(byte)0) == -1) {
+            if(MoveOn(piezas[t], cx, cy) && buscarPieza(cx,cy,(byte)0) == -1) {
                 moverPieza((byte)0, t, cx, cy, (byte)1);
                 repaint(); 
                 flag = false;
@@ -291,10 +291,24 @@ public class Board extends JPanel {
         switch(nro) {
             case 1:
                 //Peón
+                
+                //Consultar peon.pl
+                Query q = new Query("consult('peon.pl')");
+                q.hasSolution();
+                
+                if(piece.getNroPieza() < 10){
+                    comprobar = "salta_n("+0+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    piece.setFirstMovement(false);
+                }
+                else{
+                    comprobar = "salta_b("+1+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    piece.setFirstMovement(false);
+                }
                 break;
             case 2:
                 //Rey
-                break;
+                return true;
+                //break;
             case 3:
                 //Reina
                 //TODO: REINA
@@ -331,10 +345,12 @@ public class Board extends JPanel {
                 break;
             case 5:
                 //Caballo
-                break;
+                return true;
+                //break;
             case 6:
                 //Torre
-                break;
+                return true;
+                //break;
             default:
                 throw new IllegalArgumentException("Pieza inválida");
         }
@@ -342,7 +358,7 @@ public class Board extends JPanel {
         //Enviar consulta
         Query move = new Query(comprobar);
         
-        if (true/*move.hasSolution()*/) {
+        if (move.hasSolution()) {
             return true;
         }
         else {
