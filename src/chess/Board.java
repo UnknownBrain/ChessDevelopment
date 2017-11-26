@@ -324,33 +324,20 @@ public class Board extends JPanel {
                 //Consulta a white_move.pl
                 query = new Query("consult('white_move.pl')");
                 query.hasSolution();
-                comprobar = "alfil(";
-                
-                // Se le envía en qué cuadrante se moverá el alfil.                
-                if(cx < piece.getI() && cy < piece.getJ()) 
-                    comprobar += "1, ";
-                else if(cx > piece.getI() && cy > piece.getJ())
-                    comprobar += "2, ";
-                else if(cx < piece.getI() && cy > piece.getJ())
-                    comprobar += "3, ";
-                else if(cx > piece.getI() && cy < piece.getJ())
-                    comprobar += "4, ";
-                else 
-                    comprobar += "0, ";
-                
-                //Concatenar todo.
-                comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
-                
-                return true;
-                //break
+                comprobar = createTowerOrBishop("alfil(", piece, cx, cy);
+
+                break;
             case 5:
                 //Caballo
                 return true;
                 //break;
             case 6:
-                //Torre
-                return true;
-                //break;
+                // Torre
+                query = new Query("consult('white_move.pl')");
+                query.hasSolution();
+                comprobar = createTowerOrBishop("torre(", piece, cx, cy);
+
+                break;
             default:
                 throw new IllegalArgumentException("Pieza inválida");
         }
@@ -369,5 +356,26 @@ public class Board extends JPanel {
             JOptionPane.showMessageDialog(null, "Movimiento inválido");
         }
         return false;
+    }
+
+    private String createTowerOrBishop(String pieceName, Piece piece, int cx, int cy){
+        String comprobar = pieceName;
+
+        // Se le envía en qué cuadrante se moverá el alfil o la torre.
+        if(cx < piece.getI() && cy < piece.getJ())
+            comprobar += "1, ";
+        else if(cx > piece.getI() && cy > piece.getJ())
+            comprobar += "2, ";
+        else if(cx < piece.getI() && cy > piece.getJ())
+            comprobar += "3, ";
+        else if(cx > piece.getI() && cy < piece.getJ())
+            comprobar += "4, ";
+        else
+            comprobar += "0, ";
+
+        //Concatenar todo.
+        comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
+
+        return comprobar;
     }
 }
