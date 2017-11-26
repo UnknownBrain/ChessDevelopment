@@ -269,13 +269,18 @@ public class Board extends JPanel {
                 }
             }
         }while(true);
-        int cx = R.nextInt(8);
-        int cy = R.nextInt(8);
         
-        if(/*MoveOn(piezas[t], cx, cy)*/true) {
-            moverPieza((byte)0, t, cx, cy, (byte)1);
-            repaint();    
-        }
+        boolean flag = true;
+        do{
+            int cx = R.nextInt(8);
+            int cy = R.nextInt(8);
+
+            if(/*MoveOn(piezas[t], cx, cy)*/true && buscarPieza(cx,cy,(byte)0) == -1) {
+                moverPieza((byte)0, t, cx, cy, (byte)1);
+                repaint(); 
+                flag = false;
+            }
+        }while(flag);
     }
     
     public boolean MoveOn(Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
