@@ -284,26 +284,34 @@ public class Board extends JPanel {
     }
     
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
-       
-        switch(piece.getNroPieza()) {
-            case 11:
+        int nro = piece.getNroPieza();
+        if(nro > 10) nro -= 10;
+        Query query;
+        String comprobar = "";
+        switch(nro) {
+            case 1:
                 //Peón
                 break;
-            case 12:
+            case 2:
                 //Rey
                 break;
-            case 13:
+            case 3:
                 //Reina
                 //TODO: REINA
+                query = new Query("consult('white_move.pl')");
+                query.hasSolution();
+                comprobar = "queen(_,";
+                
+                comprobar = comprobar.concat(piece.getI() + "," + piece.getJ() + "," + cx + "," + cy + ").");
+                                
                 break;
-            case 14:
+            case 4:
                 //Alfil
                 //TODO: Revisar esto, Germán.
-                
                 //Consulta a white_move.pl
-                Query query = new Query("consult('white_move.pl')");
+                query = new Query("consult('white_move.pl')");
                 query.hasSolution();
-                String comprobar = "alfil(";
+                comprobar = "alfil(";
                 
                 // Se le envía en qué cuadrante se moverá el alfil.                
                 if(cx < piece.getI() && cy < piece.getJ()) 
@@ -319,21 +327,21 @@ public class Board extends JPanel {
                 
                 //Concatenar todo.
                 comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
-                //Enviar consulta
-                query = new Query(comprobar);
-                query.hasSolution();
                 
                 break;
-            case 15:
+            case 5:
                 //Caballo
                 break;
-            case 16:
+            case 6:
                 //Torre
                 break;
             default:
                 throw new IllegalArgumentException("Pieza inválida");
         }
 
+        //Enviar consulta
+        Query move = new Query(comprobar);
+        
         if (true/*move.hasSolution()*/) {
             return true;
         }
