@@ -300,9 +300,9 @@ public class Board extends JPanel {
                 //TODO: REINA
                 query = new Query("consult('white_move.pl')");
                 query.hasSolution();
-                comprobar = "alfil(";
+                comprobar = "queen(_,";
                 
-                comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
+                comprobar = comprobar.concat(piece.getI() + "," + piece.getJ() + "," + cx + "," + cy + ").");
                                 
                 break;
             case 4:
