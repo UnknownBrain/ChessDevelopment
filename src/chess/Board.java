@@ -241,7 +241,6 @@ public class Board extends JPanel {
                 if(MoveOn(piezas[t], cx, cy)) {
                     moverPieza((byte)3, t, cx, cy, (byte)0);
                     piezas[t].setOpaque(false);
-                    piezas[t].setFirstMovement(false);
                     repaint();
                     t = -1;
                     PCmove();
@@ -298,11 +297,9 @@ public class Board extends JPanel {
                 
                 if(piece.getNroPieza() < 10){
                     comprobar = "salta_n("+0+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
-                    piece.setFirstMovement(false);
                 }
                 else{
                     comprobar = "salta_b("+1+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
-                    piece.setFirstMovement(false);
                 }
                 break;
             case 2:
@@ -359,6 +356,7 @@ public class Board extends JPanel {
         Query move = new Query(comprobar);
         
         if (move.hasSolution()) {
+            piece.setFirstMovement(false);
             return true;
         }
         else {
