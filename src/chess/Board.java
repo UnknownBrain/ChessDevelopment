@@ -87,6 +87,25 @@ public class Board extends JPanel {
         }
         
         //Agregar piezas
+        agregarPiezas();
+        
+        //Enviar tablero a tablero.pl
+        enviarTableroProlog();
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        // Se pinta el tablero adaptando la imagen al tamaño del frame principal.
+        // NOTA: La resta de '-7' y '-30' se hace para una mejor presentación a la hora de desplegar el tablero.
+        // Ya que esos parámetros representan la esquina inferior derecha de la imagen.
+        // Y al intentarla despleglar del mismo tamaño de la ventana, sobresale un poco.
+        g.drawImage(m_board.getScaledInstance(m_boardWidth, m_boardHeight, Image.SCALE_DEFAULT), 0, 0, m_boardWidth - 7, m_boardHeight - 30, null);
+    }
+    
+    //Agregar piezas
+    private void agregarPiezas() {
         for(byte i = 0, k = 0; i < TABLE_SIZE; i++) {
             //Chequear si es una posición sin piezas.
             if (table[i][0] == 0) {
@@ -101,34 +120,103 @@ public class Board extends JPanel {
                 add(piezas[k]);
             }
         }
-        
-        //Enviar tablero a tablero.pl
+    }
+    
+    //Enviar tablero a tablero.pl
+    private void enviarTableroProlog() {
         Query q = new Query("consult('tablero.pl')");
         q.hasSolution();
-        for(byte i = 0; i < MAX_PIECES; ++i) {
-            //assertz(aliado(COLOR, X, Y)) //0 Negro //1 Blanco
-            Piece p = piezas[i];
+        for (Piece p : piezas) {
+            //assertz(pieza(COLOR, X, Y)) //0 Negro //1 Blanco
             String assertz = "assertz(pieza(";
-            assertz = (p.getNroPieza() > 10) ? assertz.concat("1, ") : assertz.concat("0, ");
+            assertz = (p.getNroPieza() > 10) ? assertz.concat("1,") : assertz.concat("0,");
             assertz = assertz.concat(p.getI() + "," + p.getJ() + "))");
-            Query aux = new Query(assertz);
+            q = new Query(assertz);
             q.hasSolution();
+            //System.out.println(assertz + " " + q.hasSolution());
         }
-        
     }
     
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        // Se pinta el tablero adaptando la imagen al tamaño del frame principal.
-        // NOTA: La resta de '-7' y '-30' se hace para una mejor presentación a la hora de desplegar el tablero.
-        // Ya que esos parámetros representan la esquina inferior derecha de la imagen.
-        // Y al intentarla despleglar del mismo tamaño de la ventana, sobresale un poco.
-        g.drawImage(m_board.getScaledInstance(m_boardWidth, m_boardHeight, Image.SCALE_DEFAULT), 0, 0, m_boardWidth - 7, m_boardHeight - 30, null);
+    //Seleccionar una pieza. Colorear el fondo de verde y repintar.
+    private void setSeleccionado(final byte i) {
+        piezas[i].setOpaque(true);
+        piezas[i].setBackground(Color.green);
+        repaint();
     }
     
-    public void getXY(int x, int y)  throws InterruptedException {
+    //Deseleccionar una pieza. Regresa a ser transparente.
+    private void setDeseleccionado() {
+        piezas[t].setOpaque(false);
+        repaint();
+    }
+    
+    //Buscar una pieza. colorPieza es '0' o '1'.
+    //Blanco = 1. Negro = 0.
+    private int buscarPieza(final int cx, final int cy, final byte colorPieza) {
+        //Por defecto, son los rangos de las piezas blancas.
+        byte rangoInicio = 11,
+             rangoFinal  = 16;
+        if (colorPieza == 0) {
+            rangoInicio = 1;
+            rangoFinal = 6;
+        }
+        for(byte i = 0; i < piezas.length; i++)
+            if (piezas[i] != null) {
+                if(cx == piezas[i].getI() && 
+                        cy == piezas[i].getJ() && 
+                        (piezas[i].getNroPieza() >= rangoInicio && piezas[i].getNroPieza() <= rangoFinal)
+                  )
+                    return i;
+            }
+        return -1;
+    }
+    
+    //Moverá la pieza al lugar deseado. 
+    //Multiplier es algo para acomodar el setBounds, es insignificante.
+    //colorPieza es para el llamado del método buscarPieza.
+    private void moverPieza(final byte multiplier, final int t, final int cx, final int cy, final byte colorPieza) {
+        
+        this.remove(piezas[t]);
+        piezas[t].setBounds(piece_Width * cy - multiplier, piece_Height * cx,piece_Width,piece_Height);
+        table[piezas[t].getI()][piezas[t].getJ()] = 0;
+        table[cx][cy] = piezas[t].getNroPieza();
+
+        //Buscar si no existe un enemigo en donde
+        //se vaya a mover el jugador correspondiente.
+        int u = buscarPieza(cx, cy, (byte) colorPieza);
+
+        //Consultar tablero.pl
+        Query q = new Query("consult('tablero.pl')");
+        q.hasSolution();
+
+        byte c = (byte)((piezas[t].getNroPieza() > 10) ? 1 : 0);
+
+        //Comer pieza.
+        if(u != -1) {
+            table[piezas[u].getI()][piezas[u].getJ()] = piezas[t].getNroPieza();
+            Query eliminar = new Query("retract(pieza(" + c + "," + piezas[u].getI() + "," + piezas[u].getJ() + "))");
+            eliminar.hasSolution();
+            this.remove(piezas[u]);
+            repaint();
+            piezas[u] = null;
+        }
+
+        //Mover pieza.
+        //renombrar(C, X1, Y1, X2, Y2).
+        Query renombrar = new Query("renombrar(" + c + 
+                "," + piezas[t].getI() + "," + piezas[t].getJ() + "," + cx + "," + cy + ")");
+        renombrar.hasSolution();
+        /*Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
+        eliminar.hasSolution();
+        Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
+        insertar.hasSolution();*/
+
+        piezas[t].setI(cx);
+        piezas[t].setJ(cy);
+        this.add(piezas[t]);
+    }
+    
+    public void getXY(int x, int y) throws InterruptedException {
         cx = Math.round((y + 30) / piece_Height);
         cy = Math.round((x + 1) / piece_Width);
         cx--;
@@ -136,41 +224,27 @@ public class Board extends JPanel {
         //se realiza para obtener la posicion de la matriz que corresponde
         //a la casilla clickeada
         if(t == -1) {
-            for(int i = 0 ; i < piezas.length;i++) {
-                if (piezas[i] != null) {
-                    if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
-                        piezas[i].setOpaque(true);
-                        piezas[i].setBackground(Color.green);
-                        repaint();
-                        t = i;
-                        break;
-                    }
-                }
-            }
+            //Usuario. Pieza Blanca. Color = 1.
+            t = buscarPieza(cx, cy, (byte)1);
+            setSeleccionado((byte)t);
         }
         else
             if (piezas[t].getI() != cx || piezas[t].getJ() != cy) {
                 if(true/*MoveOn(piezas[t], cx, cy)*/) {
-                    this.remove(piezas[t]);
+                    /*this.remove(piezas[t]);
                     piezas[t].setBounds(piece_Width * cy - 3, piece_Height * cx,piece_Width,piece_Height);
                     table[piezas[t].getI()][piezas[t].getJ()] = 0;
                     table[cx][cy] = piezas[t].getNroPieza();
-                    int u = -1;
                     
-                    for(int i = 0 ; i < piezas.length;i++) {
-                        if(piezas[i] != null) {
-                            if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 1 && piezas[i].getNroPieza() <= 6)) {
-                                u = i;
-                                break;
-                            }
-                        }
-                    }
+                    //Pieza Negra. Buscar si no existe un enemigo en donde
+                    //se vaya a mover el usuario.
+                    int u = buscarPieza(cx, cy, (byte) 0);
+                    
                     //Consultar tablero.pl
                     Query q = new Query("consult('tablero.pl')");
                     q.hasSolution();
 
-                    int c = (piezas[t].getNroPieza()>10) ? 1 : 0;
-                    
+                    int c = (piezas[t].getNroPieza() > 10) ? 1 : 0;
                     
                     //Comer pieza.
                     if(u != -1) {
@@ -183,6 +257,10 @@ public class Board extends JPanel {
                     }
 
                     //Mover pieza.
+                    //renombrar(C, X1, Y1, X2, Y2).
+                    Query renombrar = new Query("renombrar(" + c + 
+                            "," + piezas[t].getI() + "," + piezas[t].getJ() + "," + cx + "," + cy + ")");
+                    renombrar.hasSolution();
                     Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
                     eliminar.hasSolution();
                     Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
@@ -190,17 +268,18 @@ public class Board extends JPanel {
                     
                     piezas[t].setI(cx);
                     piezas[t].setJ(cy);
-                    piezas[t].setFirstMovement(false);
                     this.add(piezas[t]);
+                    repaint();*/
+                    moverPieza((byte)3, t, cx, cy, (byte)0);
                     piezas[t].setOpaque(false);
+                    piezas[t].setFirstMovement(false);
                     repaint();
                     t = -1;
                     PCmove();
                     
                 }
             } else {
-                piezas[t].setOpaque(false);
-                repaint();
+                setDeseleccionado();
                 t = -1;
               }
             
@@ -210,7 +289,7 @@ public class Board extends JPanel {
         System.out.println(cx+","+cy);
     }
     
-    public void PCmove() throws InterruptedException {
+    private void PCmove() throws InterruptedException {
         Random R = new Random();
         int t;
         do {
@@ -225,23 +304,14 @@ public class Board extends JPanel {
         int cy = R.nextInt(8);
         
         if(/*MoveOn(piezas[t], cx, cy)*/true) {
-            this.remove(piezas[t]);
+            /*this.remove(piezas[t]);
             piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             table[piezas[t].getI()][piezas[t].getJ()] = 0;
             table[cx][cy] = piezas[t].getNroPieza();
-        
-            int u = -1;
-            this.remove(piezas[t]);
-            piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
             
-            for(int i = 0 ; i < piezas.length;i++) {
-                if(piezas[i] != null) {
-                    if(cx == piezas[i].getI() && cy == piezas[i].getJ() && (piezas[i].getNroPieza() >= 11 && piezas[i].getNroPieza() <= 16)){
-                        u = i;
-                        break;
-                    }
-                }
-            }
+            //Pieza Blanca. Buscar si no existe un enemigo en
+            //donde se vaya a mover la PC.
+            int u = buscarPieza(cx, cy, (byte)1);
             
             //Consultar tablero.pl
             Query q = new Query("consult('tablero.pl')");
@@ -260,14 +330,19 @@ public class Board extends JPanel {
             }
             
             //Mover pieza.
-            Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
+            //renombrar(C, X1, Y1, X2, Y2).
+            Query renombrar = new Query("renombrar(" + c + 
+                    "," + piezas[t].getI() + "," + piezas[t].getJ() + "," + cx + "," + cy + ")");
+            renombrar.hasSolution();
+            /*Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
             eliminar.hasSolution();
             Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
             insertar.hasSolution();
-                
+            
             piezas[t].setI(cx);
             piezas[t].setJ(cy);
-            this.add(piezas[t]);
+            this.add(piezas[t]);*/
+            moverPieza((byte)0, t, cx, cy, (byte)1);
             repaint();    
         }
     }
