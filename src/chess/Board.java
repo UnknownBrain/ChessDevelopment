@@ -260,21 +260,22 @@ public class Board extends JPanel {
     private void PCmove() throws InterruptedException {
         Random R = new Random();
         int t;
+        boolean x = true;
         do {
             t = R.nextInt(16);
             if(piezas[t] != null) {
-                if (piezas[t].getNroPieza() > 0 && piezas[t].getNroPieza() <= 6) {
-                    break;
-                }
+                //if (piezas[t].getNroPieza() > 0 && piezas[t].getNroPieza() <= 6) {
+                    x = false;
+                //}
             }
-        }while(true);
+        }while(x);
         
         boolean flag = true;
         do{
             int cx = R.nextInt(8);
             int cy = R.nextInt(8);
 
-            if(MoveOn(piezas[t], cx, cy) && buscarPieza(cx,cy,(byte)0) == -1) {
+            if(MoveOn(piezas[t], cx, cy) /*&& buscarPieza(cx,cy,(byte)0) == -1*/) {
                 moverPieza((byte)0, t, cx, cy, (byte)1);
                 repaint(); 
                 flag = false;
@@ -309,14 +310,15 @@ public class Board extends JPanel {
             case 3:
                 //Reina
                 //TODO: REINA
-                query = new Query("consult('white_move.pl')");
+                query = new Query("consult('Reina.pl')");
                 query.hasSolution();
-                comprobar = "queen(_,";
+                comprobar = "queen(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",_,";
                 
                 comprobar = comprobar.concat(piece.getI() + "," + piece.getJ() + "," + cx + "," + cy + ").");
                                 
                 break;
             case 4:
+                
                 //Alfil
                 //TODO: Revisar esto, Germán.
                 //Consulta a white_move.pl
@@ -339,7 +341,8 @@ public class Board extends JPanel {
                 //Concatenar todo.
                 comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
                 
-                break;
+                return true;
+                //break
             case 5:
                 //Caballo
                 return true;
@@ -361,6 +364,7 @@ public class Board extends JPanel {
         }
         else {
             piezas[t].setOpaque(false);
+            repaint();
             t = -1;
             JOptionPane.showMessageDialog(null, "Movimiento inválido");
         }
