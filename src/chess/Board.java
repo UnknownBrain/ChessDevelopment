@@ -284,20 +284,21 @@ public class Board extends JPanel {
     }
     
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
-       
-        switch(piece.getNroPieza()) {
-            case 11:
+        int nro = piece.getNroPieza();
+        if(nro > 10) nro -= 10;
+        switch(nro) {
+            case 1:
                 //Peón
                 break;
-            case 12:
+            case 2:
                 //Rey
                 break;
-            case 13:
+            case 3:
                 //Reina
                 //TODO: REINA
                 comprobar += comprobar.concat("reina(");
                 break;
-            case 14:
+            case 4:
                 //Alfil
                 //TODO: Revisar esto, Germán.
                 
@@ -325,10 +326,10 @@ public class Board extends JPanel {
                 query.hasSolution();
                 
                 break;
-            case 15:
+            case 5:
                 //Caballo
                 break;
-            case 16:
+            case 6:
                 //Torre
                 break;
             default:
