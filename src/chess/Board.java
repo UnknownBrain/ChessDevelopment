@@ -283,25 +283,14 @@ public class Board extends JPanel {
         }while(flag);
     }
     
-    public boolean MoveOn(Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
-        
-        String conection = "consult('white_move.pl')",
-               comprobar = "";
-        Query query, move;
-            
-        //Consulta a white_move.pl
-        query = new Query(conection);
-        query.hasSolution();
-
-        //Movimiento de...
+    public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
+       
         switch(piece.getNroPieza()) {
             case 11:
                 //Peón
-                comprobar += comprobar.concat("peon(");
                 break;
             case 12:
                 //Rey
-                comprobar += comprobar.concat("rey(");
                 break;
             case 13:
                 //Reina
@@ -309,7 +298,12 @@ public class Board extends JPanel {
                 break;
             case 14:
                 //Alfil
-                comprobar += comprobar.concat("alfil(");
+                //TODO: Revisar esto, Germán.
+                
+                //Consulta a white_move.pl
+                Query query = new Query("consult('white_move.pl')");
+                query.hasSolution();
+                String comprobar = "alfil(";
                 
                 // Se le envía en qué cuadrante se moverá el alfil.                
                 if(cx < piece.getI() && cy < piece.getJ()) 
@@ -323,23 +317,22 @@ public class Board extends JPanel {
                 else 
                     comprobar += "0, ";
                 
+                //Concatenar todo.
+                comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
+                //Enviar consulta
+                query = new Query(comprobar);
+                query.hasSolution();
+                
                 break;
             case 15:
                 //Caballo
-                comprobar += comprobar.concat("caballo(");
                 break;
             case 16:
                 //Torre
-                comprobar += comprobar.concat("torre(");
                 break;
             default:
                 throw new IllegalArgumentException("Pieza inválida");
         }
-
-        //Concatenar todo.
-        comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
-        //Enviar consulta
-        move = new Query(comprobar);
 
         if (true/*move.hasSolution()*/) {
             return true;
