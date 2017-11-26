@@ -231,45 +231,6 @@ public class Board extends JPanel {
         else
             if (piezas[t].getI() != cx || piezas[t].getJ() != cy) {
                 if(true/*MoveOn(piezas[t], cx, cy)*/) {
-                    /*this.remove(piezas[t]);
-                    piezas[t].setBounds(piece_Width * cy - 3, piece_Height * cx,piece_Width,piece_Height);
-                    table[piezas[t].getI()][piezas[t].getJ()] = 0;
-                    table[cx][cy] = piezas[t].getNroPieza();
-                    
-                    //Pieza Negra. Buscar si no existe un enemigo en donde
-                    //se vaya a mover el usuario.
-                    int u = buscarPieza(cx, cy, (byte) 0);
-                    
-                    //Consultar tablero.pl
-                    Query q = new Query("consult('tablero.pl')");
-                    q.hasSolution();
-
-                    int c = (piezas[t].getNroPieza() > 10) ? 1 : 0;
-                    
-                    //Comer pieza.
-                    if(u != -1) {
-                        table[piezas[u].getI()][piezas[u].getJ()] = piezas[t].getNroPieza();
-                        Query eliminar = new Query("retract(pieza(" + c + "," + piezas[u].getI() + "," + piezas[u].getJ() + "))");
-                        eliminar.hasSolution();
-                        this.remove(piezas[u]);
-                        repaint();
-                        piezas[u] = null;
-                    }
-
-                    //Mover pieza.
-                    //renombrar(C, X1, Y1, X2, Y2).
-                    Query renombrar = new Query("renombrar(" + c + 
-                            "," + piezas[t].getI() + "," + piezas[t].getJ() + "," + cx + "," + cy + ")");
-                    renombrar.hasSolution();
-                    Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
-                    eliminar.hasSolution();
-                    Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
-                    insertar.hasSolution();
-                    
-                    piezas[t].setI(cx);
-                    piezas[t].setJ(cy);
-                    this.add(piezas[t]);
-                    repaint();*/
                     moverPieza((byte)3, t, cx, cy, (byte)0);
                     piezas[t].setOpaque(false);
                     piezas[t].setFirstMovement(false);
@@ -304,44 +265,6 @@ public class Board extends JPanel {
         int cy = R.nextInt(8);
         
         if(/*MoveOn(piezas[t], cx, cy)*/true) {
-            /*this.remove(piezas[t]);
-            piezas[t].setBounds(piece_Width * cy, piece_Height * cx,piece_Width,piece_Height);
-            table[piezas[t].getI()][piezas[t].getJ()] = 0;
-            table[cx][cy] = piezas[t].getNroPieza();
-            
-            //Pieza Blanca. Buscar si no existe un enemigo en
-            //donde se vaya a mover la PC.
-            int u = buscarPieza(cx, cy, (byte)1);
-            
-            //Consultar tablero.pl
-            Query q = new Query("consult('tablero.pl')");
-            q.hasSolution();
-            
-            int c = (piezas[t].getNroPieza() > 10) ? 1 : 0;
-            
-            //Comer pieza.
-            if(u != -1) {
-                table[piezas[u].getI()][piezas[u].getJ()] = piezas[t].getNroPieza();
-                Query eliminar = new Query("retract(pieza(" + c + "," + piezas[u].getI() + "," + piezas[u].getJ() + "))");
-                eliminar.hasSolution();
-                this.remove(piezas[u]);
-                repaint();
-                piezas[u] = null;
-            }
-            
-            //Mover pieza.
-            //renombrar(C, X1, Y1, X2, Y2).
-            Query renombrar = new Query("renombrar(" + c + 
-                    "," + piezas[t].getI() + "," + piezas[t].getJ() + "," + cx + "," + cy + ")");
-            renombrar.hasSolution();
-            /*Query eliminar = new Query("retract(pieza(" + c + "," + piezas[t].getI() + "," + piezas[t].getJ() + "))");
-            eliminar.hasSolution();
-            Query insertar = new Query("assertz(pieza(" + c + "," + cx + "," + cy + "))");
-            insertar.hasSolution();
-            
-            piezas[t].setI(cx);
-            piezas[t].setJ(cy);
-            this.add(piezas[t]);*/
             moverPieza((byte)0, t, cx, cy, (byte)1);
             repaint();    
         }
