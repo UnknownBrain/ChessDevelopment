@@ -3,8 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Equipo/Documents/NetBeansProjects/ChessDevelopment/src/chess/Board.java</file>
-            <file>file:/C:/Users/Equipo/Documents/NetBeansProjects/ChessDevelopment/src/chess/Chess.java</file>
+<<<<<<< Updated upstream
+            <file>file:/C:/Users/Germán%20Aguilera/Desktop/ChessDevelopment/src/chess/Chess.java</file>
+            <file>file:/C:/Users/Germán%20Aguilera/Desktop/ChessDevelopment/src/chess/Board.java</file>
+            <file>file:/C:/Users/Germán%20Aguilera/Desktop/ChessDevelopment/src/chess/Piece.java</file>
+            <file>file:/C:/Users/Germán%20Aguilera/Desktop/ChessDevelopment/src/chess/Coordenada.java</file>
+            <file>file:/C:/Users/Germán%20Aguilera/Desktop/ChessDevelopment/prolog%20files/alfil.pl</file>
+            <file>file:/C:/Users/Germán%20Aguilera/Desktop/ChessDevelopment/src/chess/FormFrame.java</file>
+=======
+            <file>file:/C:/Users/Aaron/Pictures/ChessDevelopment/ChessDevelopment/src/chess/FormFrame.java</file>
+            <file>file:/C:/Users/Aaron/Pictures/ChessDevelopment/ChessDevelopment/src/chess/Board.java</file>
+            <file>file:/C:/Users/Aaron/Pictures/ChessDevelopment/ChessDevelopment/src/chess/Piece.java</file>
+>>>>>>> Stashed changes
         </group>
     </open-files>
 </project-private>

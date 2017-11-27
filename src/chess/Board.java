@@ -285,6 +285,7 @@ public class Board extends JPanel {
                 flag = false;
             }
         }while(flag);
+        t =-1;
     }
     
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
@@ -364,7 +365,7 @@ public class Board extends JPanel {
                 //Consulta a alfil.pl
                 query = new Query("consult('alfil.pl')");
                 query.hasSolution();
-                comprobar = "alfil(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
+                comprobar = "alfil(";
                 
                 if(cx < piece.getI() && cy < piece.getJ())
                     comprobar += "1, ";
@@ -394,7 +395,7 @@ public class Board extends JPanel {
                 // Torre
                 query = new Query("consult('torre.pl')");
                 query.hasSolution();
-                comprobar = "torre(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
+                comprobar = "torre(";
                    
                 if(cx > piece.getI())
                     comprobar += "1, ";
