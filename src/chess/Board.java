@@ -364,7 +364,7 @@ public class Board extends JPanel {
                 //Consulta a alfil.pl
                 query = new Query("consult('alfil.pl')");
                 query.hasSolution();
-                comprobar = "alfil(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
+                comprobar = "alfil(";
                 
                 if(cx < piece.getI() && cy < piece.getJ())
                     comprobar += "1, ";
