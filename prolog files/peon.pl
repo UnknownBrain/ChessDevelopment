@@ -22,7 +22,7 @@ pmov(true).
 
 ocupado(X,Y):- pieza(_,X,Y).
 
-salta_n(C,M,X,Y,X1,Y1):-
+salta_n(C,M,X,Y,[X1,Y1]):-
     diferente(X,Y,X1,Y1),
     (pmov(M) -> (not(ocupado(X1,Y1)),(dxy(C,Dx,Dy);S is X - 1,(not(ocupado(S,Y)),dxyi(C,Dx,Dy)));(ocupado(X1,Y1),dxyc(C,Dx,Dy))) ;
     ((not(ocupado(X1,Y1)),dxy(C,Dx,Dy));(ocupado(X1,Y1),dxyc(C,Dx,Dy)))),

@@ -285,6 +285,7 @@ public class Board extends JPanel {
                 flag = false;
             }
         }while(flag);
+        t =-1;
     }
     
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
@@ -318,7 +319,7 @@ public class Board extends JPanel {
                 //Rey
                 query = new Query("consult('king.pl')");
                 query.hasSolution();
-                if (piece.getNroPieza() > 10) {
+                if (piece.getNroPieza() < 10) {
                     
                     Variable c = new Variable("C");
                     
