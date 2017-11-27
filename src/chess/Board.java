@@ -295,15 +295,23 @@ public class Board extends JPanel {
         switch(nro) {
             case 1:
                 //Peón
+                
+                int color = -1;
+                String peon = "consult('peon.pl')";
+                
                 //Consultar peon.pl
-                Query q = new Query("consult('peon.pl')");
+                Query q = new Query(peon);
                 q.hasSolution();
                 
                 if(piece.getNroPieza() < 10){
                     comprobar = "salta_n("+0+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    //color = table[cx][cy] > 10 ? 1 : 0;
+                    //comprobar = "black_peon(" + piece.getI() + "," + cx+ ","+ piece.getJ() + ","+ cy+ "," + table[cx][cy] + "," + color +").";
                 }
                 else{
                     comprobar = "salta_b("+1+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    //color = table[cx][cy] > 10 ? 1 : 0;
+                    //comprobar = "white_peon(" + piece.getI() + "," + cx+ ","+ piece.getJ() + ","+ cy+ "," + table[cx][cy] + "," + color +").";
                 }
                 break;
             case 2:
@@ -356,7 +364,7 @@ public class Board extends JPanel {
                 //Consulta a alfil.pl
                 query = new Query("consult('alfil.pl')");
                 query.hasSolution();
-                comprobar = "alfil(";
+                comprobar = "alfil(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
                 
                 if(cx < piece.getI() && cy < piece.getJ())
                     comprobar += "1, ";
@@ -373,14 +381,20 @@ public class Board extends JPanel {
 
                 break;
             case 5:
-                //Caballo
-                return true;
-                //break;
+                //Cabasho
+                query = new Query("consult('caballo.pl')");
+                query.hasSolution();
+                comprobar = "caballo(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
+                
+                //Concatenar todo.
+                comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
+
+                break;
             case 6:
                 // Torre
                 query = new Query("consult('torre.pl')");
                 query.hasSolution();
-                comprobar = "torre(";
+                comprobar = "torre(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
                    
                 if(cx > piece.getI())
                     comprobar += "1, ";
