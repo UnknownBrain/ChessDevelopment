@@ -395,7 +395,7 @@ public class Board extends JPanel {
                 // Torre
                 query = new Query("consult('torre.pl')");
                 query.hasSolution();
-                comprobar = "torre(";
+                comprobar = "torre(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ", ";
                    
                 if(cx > piece.getI())
                     comprobar += "1, ";
