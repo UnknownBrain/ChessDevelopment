@@ -285,13 +285,12 @@ public class Board extends JPanel {
                 flag = false;
             }
         }while(flag);
-        t =-1;
     }
     
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
         int nro = piece.getNroPieza();
         if(nro > 10) nro -= 10;
-        Query query = null;
+        Query query;
         String comprobar = "";
         switch(nro) {
             case 1:
@@ -337,6 +336,7 @@ public class Board extends JPanel {
                         //Recuperando las coordenadas
                         prologPositions.add(new Coordenada(t.arg(1).intValue(), t.arg(2).arg(1).intValue()));
                     }
+                    query.close();
                     
                     for (Coordenada coord : prologPositions) {
                         int enemigo = buscarPieza(coord.getX(), coord.getY(), (byte)1);
