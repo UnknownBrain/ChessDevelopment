@@ -295,15 +295,23 @@ public class Board extends JPanel {
         switch(nro) {
             case 1:
                 //Peón
+                
+                int color = -1;
+                String peon = "consult('peon.pl')";
+                
                 //Consultar peon.pl
-                Query q = new Query("consult('peon.pl')");
+                Query q = new Query(peon);
                 q.hasSolution();
                 
                 if(piece.getNroPieza() < 10){
                     comprobar = "salta_n("+0+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    //color = table[cx][cy] > 10 ? 1 : 0;
+                    //comprobar = "black_peon(" + piece.getI() + "," + cx+ ","+ piece.getJ() + ","+ cy+ "," + table[cx][cy] + "," + color +").";
                 }
                 else{
                     comprobar = "salta_b("+1+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    //color = table[cx][cy] > 10 ? 1 : 0;
+                    //comprobar = "white_peon(" + piece.getI() + "," + cx+ ","+ piece.getJ() + ","+ cy+ "," + table[cx][cy] + "," + color +").";
                 }
                 break;
             case 2:
