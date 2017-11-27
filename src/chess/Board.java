@@ -347,9 +347,12 @@ public class Board extends JPanel {
                             if (enemigo != -1) {
                                 this.cx = piezas[enemigo].getI();
                                 this.cy = piezas[enemigo].getJ();
+                                break;
                             }
                         }
+                        return true;
                     }
+                    return false;
                 }
                 else
                     comprobar = "mover(" + piece.getI() + "," + piece.getJ() + "," + cx + "," + cy + ")."; 
