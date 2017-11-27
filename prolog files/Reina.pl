@@ -1,3 +1,4 @@
+[tablero].
 
 correcto(Color,X, Y) :- 0 =< X, X =< 7,
                   0 =< Y, Y =< 7,
