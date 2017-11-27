@@ -336,6 +336,7 @@ public class Board extends JPanel {
                         //Recuperando las coordenadas
                         prologPositions.add(new Coordenada(t.arg(1).intValue(), t.arg(2).arg(1).intValue()));
                     }
+                    query.close();
                     
                     for (Coordenada coord : prologPositions) {
                         int enemigo = buscarPieza(coord.getX(), coord.getY(), (byte)1);
