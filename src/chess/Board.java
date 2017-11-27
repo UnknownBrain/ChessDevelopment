@@ -338,11 +338,16 @@ public class Board extends JPanel {
                     }
                     query.close();
                     
-                    for (Coordenada coord : prologPositions) {
-                        int enemigo = buscarPieza(coord.getX(), coord.getY(), (byte)1);
-                        if (enemigo != -1) {
-                            this.cx = piezas[enemigo].getI();
-                            this.cy = piezas[enemigo].getJ();
+                    if (!prologPositions.isEmpty()) {
+                        this.cx = prologPositions.get(0).getX();
+                        this.cy = prologPositions.get(0).getY();
+                        
+                        for (Coordenada coord : prologPositions) {
+                            int enemigo = buscarPieza(coord.getX(), coord.getY(), (byte)1);
+                            if (enemigo != -1) {
+                                this.cx = piezas[enemigo].getI();
+                                this.cy = piezas[enemigo].getJ();
+                            }
                         }
                     }
                 }
