@@ -290,7 +290,7 @@ public class Board extends JPanel {
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
         int nro = piece.getNroPieza();
         if(nro > 10) nro -= 10;
-        Query query;
+        Query query = null;
         String comprobar = "";
         switch(nro) {
             case 1:
@@ -310,7 +310,7 @@ public class Board extends JPanel {
                 //Rey
                 query = new Query("consult('king.pl')");
                 query.hasSolution();
-                if (piece.getNroPieza() > 10) {
+                if (piece.getNroPieza() < 10) {
                     
                     Variable c = new Variable("C");
                     
