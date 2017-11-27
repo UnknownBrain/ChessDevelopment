@@ -373,9 +373,15 @@ public class Board extends JPanel {
 
                 break;
             case 5:
-                //Caballo
-                return true;
-                //break;
+                //Cabasho
+                query = new Query("consult('caballo.pl')");
+                query.hasSolution();
+                comprobar = "caballo(" + ((piece.getNroPieza() > 10) ? "1" : "0") + ",";
+                
+                //Concatenar todo.
+                comprobar = comprobar.concat(piece.getI() + "," + cx + "," + piece.getJ() + "," + cy + ").");
+
+                break;
             case 6:
                 // Torre
                 query = new Query("consult('torre.pl')");
