@@ -285,7 +285,6 @@ public class Board extends JPanel {
                 flag = false;
             }
         }while(flag);
-        t =-1;
     }
     
     public boolean MoveOn(final Piece piece, int cx, int cy) throws PrologException, IllegalArgumentException {
@@ -305,7 +304,7 @@ public class Board extends JPanel {
                 q.hasSolution();
                 
                 if(piece.getNroPieza() < 10){
-                    comprobar = "salta_n("+0+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+","+cx+","+cy+").";
+                    comprobar = "salta_n("+0+","+piece.getFirstMovement()+","+piece.getI()+","+piece.getJ()+",["+cx+","+cy+"]).";
                     //color = table[cx][cy] > 10 ? 1 : 0;
                     //comprobar = "black_peon(" + piece.getI() + "," + cx+ ","+ piece.getJ() + ","+ cy+ "," + table[cx][cy] + "," + color +").";
                 }
@@ -421,8 +420,8 @@ public class Board extends JPanel {
             piece.setFirstMovement(false);
             return true;
         }
-        else {
-            piezas[t].setOpaque(false);
+        else if(piece.getNroPieza() > 10){
+            piece.setOpaque(false);
             repaint();
             t = -1;
             JOptionPane.showMessageDialog(null, "Movimiento inválido");
