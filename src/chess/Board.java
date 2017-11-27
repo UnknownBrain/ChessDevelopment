@@ -7,12 +7,16 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import org.jpl7.PrologException;
 import org.jpl7.Query;
+import org.jpl7.Term;
+import org.jpl7.Variable;
 
 /**
  *
@@ -272,8 +276,8 @@ public class Board extends JPanel {
         
         boolean flag = true;
         do{
-            int cx = R.nextInt(8);
-            int cy = R.nextInt(8);
+            cx = R.nextInt(8);
+            cy = R.nextInt(8); 
 
             if(MoveOn(piezas[t], cx, cy) /*&& buscarPieza(cx,cy,(byte)0) == -1*/) {
                 moverPieza((byte)0, t, cx, cy, (byte)1);
@@ -291,7 +295,6 @@ public class Board extends JPanel {
         switch(nro) {
             case 1:
                 //Peón
-                
                 //Consultar peon.pl
                 Query q = new Query("consult('peon.pl')");
                 q.hasSolution();
@@ -305,8 +308,38 @@ public class Board extends JPanel {
                 break;
             case 2:
                 //Rey
-                return true;
-                //break;
+                query = new Query("consult('king.pl')");
+                query.hasSolution();
+                if (piece.getNroPieza() > 10) {
+                    
+                    Variable c = new Variable("C");
+                    
+                    //Para PC. La PC retornará una lista de posiciones. Aquí se guardan.
+                    ArrayList<Coordenada> prologPositions = new ArrayList<>();
+
+                    query = new Query(
+                        "mover([" + piece.getI() + "," + piece.getJ() + "]," + c + ")"
+                    );
+                    Map<String, Term> solution;
+
+                    query.open();
+                    while((solution = query.getSolution()) != null) {
+                        Term t = (Term) solution.get("C");
+                        //Recuperando las coordenadas
+                        prologPositions.add(new Coordenada(t.arg(1).intValue(), t.arg(2).arg(1).intValue()));
+                    }
+                    
+                    for (Coordenada coord : prologPositions) {
+                        int enemigo = buscarPieza(coord.getX(), coord.getY(), (byte)1);
+                        if (enemigo != -1) {
+                            this.cx = piezas[enemigo].getI();
+                            this.cy = piezas[enemigo].getJ();
+                        }
+                    }
+                }
+                else
+                    comprobar = "mover(" + piece.getI() + "," + piece.getJ() + "," + cx + "," + cy + ")."; 
+                break;
             case 3:
                 //Reina
                 //TODO: REINA
