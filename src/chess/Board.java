@@ -238,7 +238,8 @@ public class Board extends JPanel {
         if(t == -1) {
             //Usuario. Pieza Blanca. Color = 1.
             t = buscarPieza(cx, cy, (byte)1);
-            setSeleccionado((byte)t);
+            if (t != -1)
+                setSeleccionado((byte)t);
         }
         else
             if (piezas[t].getI() != cx || piezas[t].getJ() != cy) {
