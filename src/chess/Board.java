@@ -210,6 +210,10 @@ public class Board extends JPanel {
             eliminar.hasSolution();
             this.remove(piezas[u]);
             repaint();
+            if (piezas[u].getNroPieza() == 12 || piezas[u].getNroPieza() == 2) {
+                JOptionPane.showMessageDialog(null, "Fin del Juego");
+                System.exit(0);
+            }
             piezas[u] = null;
         }
 
