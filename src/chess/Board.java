@@ -317,12 +317,11 @@ public class Board extends JPanel {
                 comprobar = comprobar.concat(piece.getI() + "," + piece.getJ() + "," + cx + "," + cy + ").");
                                 
                 break;
-            case 4:
-                
+            case 4:                
                 //Alfil
                 //TODO: Revisar esto, Germán.
-                //Consulta a white_move.pl
-                query = new Query("consult('white_move.pl')");
+                //Consulta a alfil.pl
+                query = new Query("consult('alfil.pl')");
                 query.hasSolution();
                 comprobar = createTowerOrBishop("alfil(", piece, cx, cy);
 
@@ -333,7 +332,7 @@ public class Board extends JPanel {
                 //break;
             case 6:
                 // Torre
-                query = new Query("consult('white_move.pl')");
+                query = new Query("consult('torre.pl')");
                 query.hasSolution();
                 comprobar = createTowerOrBishop("torre(", piece, cx, cy);
 
